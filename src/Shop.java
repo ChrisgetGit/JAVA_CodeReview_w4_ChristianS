@@ -14,11 +14,13 @@ public class Shop {
         this.name = name;
         this.address = address;
         this.ID = IDCounter++;
+        this.getProductsInShop1();
 
     }
 
 // Create  a method to add products to the shop.
-    public void buyForShop1(Product x, ArrayList<Product> productsInShop1){
+    public void buyForShop1(Product x){
+        System.out.println(x.getProductQuantity()+" " + x.getProductName() + " where added to the " + this.getName() + "-SuPeR ShOp!" );
         productsInShop1.add(x);
     }
 

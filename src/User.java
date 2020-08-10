@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 //Create a class User with properties:
 public class User {
@@ -11,6 +11,7 @@ public class User {
     String address;
     String zip;
     String phone;
+    ArrayList <Product> purchaseHistory = new ArrayList<>();
 
     public User(String firstName, String lastName, String eMail, String address, String zip, String phone) {
         this.firstName = firstName;
@@ -20,33 +21,33 @@ public class User {
         this.zip = zip;
         this.phone = phone;
         this.Id = IdCounter++;
+        
 
     }
-//user buy with exception and warning for shop-employes and filling users purchase History
-    public void buyForUser (HashMap<Integer, Product> productHashMap, String product, int quantity, ArrayList<Product> purchaseHist) throws StockException{
+//user buy with exception and warning for shop-employees and filling users purchase History
+    public void buyForUser (Shop shop , String product, int quantity) throws StockException{
 
-        for (Integer i : productHashMap.keySet()) {
-            if (productHashMap.get(i).getProductName().equals(product)) {
+        for (Product i : shop.getProductsInShop1()) {
+            if (i.getProductName().equals(product)) {
                 try {
-                    if ( 5>=productHashMap.get(i).getProductQuantity() - quantity && productHashMap.get(i).getProductQuantity() - quantity>0) {
-                        System.out.println("\nBecause " + firstName + " " +lastName + " has bought "+quantity +" " +product + " products:");
-                        System.out.println("Attention: There are less than 5 products of " + product + " left");
-                    int productQuant = productHashMap.get(i).getProductQuantity() - quantity;
-                    purchaseHist.add(new Product(productHashMap.get(i).getProductName(), productHashMap.get(i).getProductDescription(), quantity, productHashMap.get(i).getProductPrice()));
-                    productHashMap.get(i).setProductQuantity(productQuant);
+                    if ( 5>=i.getProductQuantity() - quantity && i.getProductQuantity() - quantity>0) {
+                        System.out.println("\n"+ firstName + " " +lastName + " has bought "+ quantity +" " + product);
+                        System.out.println("Attention: There are less than 5 pieces of " + product + " left");
+                    int productQuant = i.getProductQuantity() - quantity;
+                    purchaseHistory.add(new Product(i.getProductName(), i.productDescription, quantity, i.productPrice));
+                    i.setProductQuantity(productQuant);
                     }
 
-                    else if (productHashMap.get(i).getProductQuantity() - quantity < 0){
-                        throw new StockException ("Not enough items in stock");
+                    else if (i.getProductQuantity() - quantity < 0){
+                        throw new StockException (this.getFirstName() + " " + this.getLastName() + " tried to buy " + product + " but there are not enough items in stock");
                     }
 
                     else
-                        { int productQuantity = productHashMap.get(i).getProductQuantity() - quantity;
-                        purchaseHist.add(new Product(productHashMap.get(i).getProductName(), productHashMap.get(i).getProductDescription(), quantity, productHashMap.get(i).getProductPrice()));
-                        productHashMap.get(i).setProductQuantity(productQuantity);
-                            System.out.println(firstName + " " +lastName + " has bought "+quantity +" " +product + "products\n");}
+                        { int productsLeft = i.getProductQuantity() - quantity;
+                        purchaseHistory.add(new Product(i.getProductName(), i.productDescription, quantity, i.productPrice));
+                        i.setProductQuantity(productsLeft);
+                            System.out.println("\n"+ firstName + " " +lastName + " has bought "+ quantity +" " + product);}
                     break;} catch (StockException e) {
-                    System.out.println(firstName + " " +lastName + " tried to buy "+quantity +" " +product + "products");
                     System.out.println(e.getMessage());
                 }
                 }
@@ -57,6 +58,21 @@ public class User {
     public int getId() {
         return Id;
     }
+
+    public ArrayList<Product> getPurchaseHistory() {
+        return purchaseHistory;
+    }
+   public void purchaseHist (){
+        if (purchaseHistory.isEmpty()){
+            System.out.println("\n" + getFirstName() + " hasn't bought anything so far!");
+        }else
+       System.out.println("\n"+this.getFirstName()+" "+ this.getLastName() + " has bought up to now: \n" + this.getPurchaseHistory());
+   }
+    public void setPurchaseHistory(ArrayList<Product> purchaseHistory) {
+        this.purchaseHistory = purchaseHistory;
+    }
+
+
 
     public void setId(int id) {
         Id = id;
